@@ -1,12 +1,23 @@
-import express, { Request, Response } from "express";
-//import mysql from "mysql";
+import express from "express";
+import dotenv from "dotenv-safe";
 
-const app = express();
+import userRoutes from "./user/user.route";
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => {
-  console.log("##############");
-  console.log("###API REST###");
-  console.log("##############");
-  console.log("App is running");
-});
+function init() {
+  dotenv.config();
+  const app = express();
+
+  const port = process.env.PORT || 3000;
+  const API_VERSION = process.env.API_VERSION;
+
+  app.use(`/api/${API_VERSION}`, userRoutes);
+
+  app.listen(port, () => {
+    console.log("##############");
+    console.log("###API REST###");
+    console.log("##############");
+    console.log("App is running in the port " + port);
+  });
+}
+
+init();

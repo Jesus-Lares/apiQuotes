@@ -7,12 +7,14 @@
     "dev": "nodemon src/app.ts",
     "ts:build": "rm -rf ./dist && tsc",
     "prestart": "npm run ts:build",
-    "start": "node dist/app.js"
+    "start": "node dist/app.js",
+    "db": "pscale connect quotes dev --execute 'yarn dev'"
   },
   "keywords": [],
   "author": "",
   "license": "MIT",
   "devDependencies": {
+    "@types/dotenv-safe": "^8.1.2",
     "@types/express": "^4.17.13",
     "@types/mysql": "^2.15.19",
     "@types/node": "^17.0.1",
@@ -22,6 +24,7 @@
   "dependencies": {
     "axios": "^0.24.0",
     "dotenv": "^10.0.0",
+    "dotenv-safe": "^8.2.0",
     "express": "^4.17.2",
     "mysql": "^2.18.1",
     "ts-node": "^10.4.0"
