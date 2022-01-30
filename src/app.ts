@@ -10,6 +10,7 @@ function init() {
   const port = process.env.PORT || 3000;
   const API_VERSION = process.env.API_VERSION;
 
+  app.use(express.json());
   app.use(`/api/${API_VERSION}`, userRoutes);
 
   app.listen(port, () => {
