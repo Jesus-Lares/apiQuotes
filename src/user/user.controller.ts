@@ -4,9 +4,12 @@ import bcrypt from "bcrypt";
 
 import {
   createElement,
+  deleteAllElement,
+  deleteElementById,
   findAllElements,
   findElement,
   findElementById,
+  updateElementById,
 } from "../lib/db-operations";
 import {
   Collections,
@@ -119,14 +122,84 @@ const getMe = (req: Request, res: Response) => {
   const userId = req.userId || -1;
 
   findElementById("Users", userId, (err, results) => {
-    if (err) res.status(500).send(send);
-    else
-      res.status(200).send({
-        status: true,
-        message: "Usuario cargado correctamente.",
-        user: results[0],
-      });
+    if (err) return res.status(400).send(send);
+    if (results.length === 0)
+      return res
+        .status(400)
+        .send({ ...send, message: errorsUser.EMAIL_NOT_EXIST });
+
+    return res.status(200).send({
+      status: true,
+      message: "Usuario cargado correctamente.",
+      user: results[0],
+    });
   });
 };
+const deleteUser = (req: Request, res: Response) => {
+  const { id } = req.params;
+  const send = {
+    status: false,
+    message: errorsUser.default,
+  };
+  findElementById(Collections.users, parseInt(id), (err, results) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).send(send);
+    }
+    if (results.length === 0)
+      return res
+        .status(400)
+        .send({ ...send, message: errorsUser.EMAIL_NOT_EXIST });
 
-export default { users, signUp, signIn, getMe };
+    deleteElementById(Collections.users, parseInt(id), (errDelete) => {
+      if (errDelete) {
+        console.log(errDelete);
+        return res.status(400).send(send);
+      }
+      deleteAllElement(
+        Collections.quotes,
+        "idUser",
+        parseInt(id),
+        (errQuote) => {
+          if (errDelete) {
+            console.log(errDelete);
+            return res.status(400).send(send);
+          }
+          return res.status(200).send({
+            status: true,
+            message: "Usuario eliminado.",
+          });
+        }
+      );
+    });
+  });
+};
+const updateUser = (req: Request, res: Response) => {
+  const userId = req.userId || -1;
+  const send = {
+    status: false,
+    message: errorsUser.default,
+  };
+  findElementById(Collections.users, userId, (err, results) => {
+    if (err) {
+      console.log(err);
+      return res.status(400).send(send);
+    }
+    if (results.length === 0)
+      return res
+        .status(400)
+        .send({ ...send, message: errorsUser.EMAIL_NOT_EXIST });
+
+    updateElementById(Collections.users, userId, req.body, (errUpdate) => {
+      if (errUpdate) {
+        console.log(errUpdate);
+        return res.status(400).send(send);
+      }
+      return res.status(200).send({
+        status: true,
+        message: "Usuario actualizado.",
+      });
+    });
+  });
+};
+export default { users, signUp, signIn, getMe, deleteUser, updateUser };

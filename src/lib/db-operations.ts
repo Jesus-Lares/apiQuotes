@@ -53,3 +53,12 @@ export const updateElementById = (
   const query = `UPDATE ${collection} SET ? WHERE id=?`;
   connection.query(query, [valueChange, valueSearch], callback);
 };
+export const deleteAllElement = (
+  collection: string,
+  paramDelete: string,
+  valueDelete: number | string,
+  callback: queryCallback
+) => {
+  const query = `DELETE FROM ${collection} WHERE ${paramDelete}=?`;
+  connection.query(query, [valueDelete], callback);
+};
