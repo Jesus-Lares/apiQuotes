@@ -1,5 +1,8 @@
+export const SECRET_KEY = process.env.SECRET || "JesusLaresContrerasApiQuotes";
+
 export enum Collections {
   users = "Users",
+  quotes = "Quotes",
 }
 export enum RoleUser {
   client = "client",
@@ -11,25 +14,27 @@ type typesObjectString = {
 };
 export const createConstants: typesObjectString = {
   Users: "(id,name,email,password,registerDate,role,state)",
+  Quotes: "(id,quote,writer,userName,idUser,registerDate)",
 };
 
-export const errorCreateUser: typesObjectString = {
+export const errorsUser: typesObjectString = {
   EMAIL_EXIST: "El email ya esta regitrado con una cuenta.",
   DATA_EMPTY: "No se recibieron datos para el registro.",
   EMAIL_NOT_EXIST: "El usuario no existe.",
   WRONG_PASSWORD: "Contraseña incorrecta.",
   TOKEN_VERICATION_FAILED: "token no valido, inicia sesion de nuevo",
+  ALL_USERS:
+    "Error al cargar los usuarios. Comprueba que tienes todo corretamente.",
   default:
     "Error al realizar la petición. Comprueba que tienes corretamente todo",
 };
-
-export const SECRET_KEY = process.env.SECRET || "JesusLaresContrerasApiQuotes";
-
-/**
- * H = horas
- * M = minutos
- * D = dias
- */
+export const errorsQuote: typesObjectString = {
+  TOKEN_VERICATION_FAILED: "token no valido, inicia sesion de nuevo",
+  DATA_EMPTY: "No se recibieron datos para el registro.",
+  QUOTE_NOT_EXIST: "La cita no existe.",
+  default:
+    "Error al realizar la petición. Comprueba que tienes corretamente todo",
+};
 
 export enum EXPIRETIME {
   H1 = 60 * 60,

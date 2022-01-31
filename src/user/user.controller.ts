@@ -4,20 +4,24 @@ import bcrypt from "bcrypt";
 
 import {
   createElement,
-  findElements,
-  findOneElement,
-  findOneElementById,
+  findAllElements,
+  findElement,
+  findElementById,
 } from "../lib/db-operations";
-import { Collections, errorCreateUser, RoleUser } from "../config/constants";
+import {
+  Collections,
+  createConstants,
+  errorsUser,
+  RoleUser,
+} from "../config/constants";
 import JWT from "../lib/jwt";
 
 const users = (req: Request, res: Response) => {
-  findElements(Collections.users, (err: MysqlError | null, result) => {
+  findAllElements(Collections.users, (err: MysqlError | null, result) => {
     if (err) {
       return res.status(400).send({
         status: false,
-        message:
-          "Error al cargar los usuarios. Comprueba que tienes corretamente todo",
+        message: createConstants.ALL_USERS,
         users: [],
       });
     }
@@ -28,25 +32,22 @@ const users = (req: Request, res: Response) => {
     });
   });
 };
-
 const signUp = (req: Request, res: Response) => {
   const send = {
     status: false,
-    message: errorCreateUser.default,
+    message: errorsUser.default,
     user: null,
   };
   if (!req.body)
-    res.status(400).send({ ...send, message: errorCreateUser.DATA_EMPTY });
+    res.status(400).send({ ...send, message: errorsUser.DATA_EMPTY });
 
   const { name, email, password } = req.body;
 
-  findOneElement(Collections.users, "email", email, (emailErr, results) => {
+  findElement(Collections.users, "email", email, (emailErr, results) => {
     if (emailErr) return res.status(400).send(send);
 
     if (results.length != 0)
-      return res
-        .status(400)
-        .send({ ...send, message: errorCreateUser.EMAIL_EXIST });
+      return res.status(400).send({ ...send, message: errorsUser.EMAIL_EXIST });
 
     const user = {
       name,
@@ -73,27 +74,27 @@ const signUp = (req: Request, res: Response) => {
 const signIn = (req: Request, res: Response) => {
   const send = {
     status: false,
-    message: errorCreateUser.default,
+    message: errorsUser.default,
     user: null,
   };
   if (!req.body)
-    res.status(400).send({ ...send, message: errorCreateUser.DATA_EMPTY });
+    res.status(400).send({ ...send, message: errorsUser.DATA_EMPTY });
 
   const { email, password } = req.body;
 
-  findOneElement(Collections.users, "email", email, (emailErr, results) => {
+  findElement(Collections.users, "email", email, (emailErr, results) => {
     if (emailErr) return res.status(400).send(send);
 
     if (results.length === 0)
       return res
         .status(400)
-        .send({ ...send, message: errorCreateUser.EMAIL_NOT_EXIST });
+        .send({ ...send, message: errorsUser.EMAIL_NOT_EXIST });
     const user = results[0];
     const passwordCheck = bcrypt.compareSync(password, user.password);
     if (!passwordCheck) {
       return res
         .status(400)
-        .send({ ...send, message: errorCreateUser.WRONG_PASSWORD });
+        .send({ ...send, message: errorsUser.WRONG_PASSWORD });
     }
     delete user.password;
     delete user.registerDate;
@@ -108,23 +109,16 @@ const signIn = (req: Request, res: Response) => {
     });
   });
 };
-
 const getMe = (req: Request, res: Response) => {
   const send = {
     status: false,
-    message: errorCreateUser.default,
+    message: errorsUser.default,
     user: null,
   };
-  if (!req.body)
-    res.status(400).send({ ...send, message: errorCreateUser.DATA_EMPTY });
 
-  const { token } = req.body;
-  let info = new JWT().verify(token);
-  if (info === errorCreateUser.TOKEN_VERICATION_FAILED) {
-    return res.status(400).send({ ...send, message: info });
-  }
+  const userId = req.userId || -1;
 
-  findOneElementById("Users", Object.values(info)[0].id, (err, results) => {
+  findElementById("Users", userId, (err, results) => {
     if (err) res.status(500).send(send);
     else
       res.status(200).send({

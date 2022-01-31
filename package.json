@@ -4,14 +4,14 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "nodemon src/app.ts",
+    "dev": "nodemon --files src/app.ts",
     "ts:build": "rm -rf ./dist && tsc",
     "prestart": "npm run ts:build",
     "start": "node dist/app.js",
     "db": "pscale connect quotes dev --execute 'yarn dev'"
   },
   "keywords": [],
-  "author": "",
+  "author": "Jesús Lares Contreras",
   "license": "MIT",
   "devDependencies": {
     "@types/bcrypt": "^5.0.0",
