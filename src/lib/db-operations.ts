@@ -62,3 +62,30 @@ export const deleteAllElement = (
   const query = `DELETE FROM ${collection} WHERE ${paramDelete}=?`;
   connection.query(query, [valueDelete], callback);
 };
+
+export const deleteElementShuffle = (
+  userId: number,
+  quoteId: number,
+  callback: queryCallback
+) => {
+  const query = `DELETE FROM ViewQuotes WHERE userId=? AND quoteId=?`;
+  connection.query(query, [userId, quoteId], callback);
+};
+
+export const findAllElementsShuffle = (
+  valueSearch: number,
+  admin: boolean,
+  callback: queryCallback
+) => {
+  let query = `SELECT * FROM Quotes WHERE idUser=?`;
+  if (admin) query += " OR role='admin'";
+  connection.query(query, [valueSearch], callback);
+};
+export const createMultipleElements = (
+  collection: string,
+  values: any,
+  callback: queryCallback
+) => {
+  const query = `INSERT INTO ${collection} ${createConstants[collection]} VALUES ?`;
+  connection.query(query, [values], callback);
+};

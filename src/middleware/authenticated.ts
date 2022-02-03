@@ -1,5 +1,7 @@
 import { NextFunction, Request, Response } from "express";
-import { errorsUser } from "../config/constants";
+import bcrypt from "bcrypt";
+
+import { errorsUser, RoleUser } from "../config/constants";
 import JWT from "../lib/jwt";
 
 export default (req: Request, res: Response, next: NextFunction) => {
@@ -19,9 +21,12 @@ export default (req: Request, res: Response, next: NextFunction) => {
   if (Object.values(info)[3] <= new Date().toISOString()) {
     return res.status(404).send({ message: "El token ha expirado" });
   }
+  const checkRole = bcrypt.compareSync(
+    RoleUser.admin,
+    Object.values(info)[0].role
+  );
 
+  req.userRole = checkRole ? RoleUser.admin : RoleUser.client;
   req.userId = Object.values(info)[0].id;
-  req.userName = Object.values(info)[0].name;
-
   next();
 };

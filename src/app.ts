@@ -3,6 +3,7 @@ import dotenv from "dotenv-safe";
 
 import userRoutes from "./user/user.route";
 import quotesRoutes from "./quotes/quotes.route";
+import shuffleRoutes from "./shuffle/shuffle.route";
 
 function init() {
   dotenv.config();
@@ -14,6 +15,7 @@ function init() {
   app.use(express.json());
   app.use(`/api/${API_VERSION}`, userRoutes);
   app.use(`/api/${API_VERSION}`, quotesRoutes);
+  app.use(`/api/${API_VERSION}`, shuffleRoutes);
 
   app.listen(port, () => {
     console.log("##############");

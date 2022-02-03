@@ -8,7 +8,7 @@ import {
   findElementById,
   updateElementById,
 } from "../lib/db-operations";
-import { Collections, errorsQuote } from "../config/constants";
+import { Collections, errorsQuote, RoleUser } from "../config/constants";
 
 const quotes = (req: Request, res: Response) => {
   const idUser = req.userId || -1;
@@ -47,7 +47,7 @@ const createQuote = (req: Request, res: Response) => {
   const obj = {
     quote,
     writer,
-    userName: req.userName,
+    role: RoleUser.client,
     idUser: req.userId,
     registerDate: new Date().toISOString(),
   };
@@ -56,6 +56,7 @@ const createQuote = (req: Request, res: Response) => {
       console.log(err);
       return res.status(400).send(send);
     }
+
     return res.status(200).send({
       status: true,
       message: "Cita creada correctamente",

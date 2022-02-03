@@ -3,6 +3,7 @@ export const SECRET_KEY = process.env.SECRET || "JesusLaresContrerasApiQuotes";
 export enum Collections {
   users = "Users",
   quotes = "Quotes",
+  shuffle = "ViewQuotes",
 }
 export enum RoleUser {
   client = "client",
@@ -14,7 +15,8 @@ type typesObjectString = {
 };
 export const createConstants: typesObjectString = {
   Users: "(id,name,email,password,registerDate,role,state)",
-  Quotes: "(id,quote,writer,userName,idUser,registerDate)",
+  Quotes: "(id,quote,writer,role,idUser,registerDate)",
+  ViewQuotes: "(userId,quoteId)",
 };
 
 export const errorsUser: typesObjectString = {

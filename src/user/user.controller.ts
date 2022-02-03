@@ -102,8 +102,8 @@ const signIn = (req: Request, res: Response) => {
     delete user.password;
     delete user.registerDate;
     delete user.email;
-    delete user.role;
     delete user.state;
+    user.role = bcrypt.hashSync(user.role, 10);
 
     return res.status(200).send({
       status: true,
@@ -121,7 +121,7 @@ const getMe = (req: Request, res: Response) => {
 
   const userId = req.userId || -1;
 
-  findElementById("Users", userId, (err, results) => {
+  findElementById(Collections.users, userId, (err, results) => {
     if (err) return res.status(400).send(send);
     if (results.length === 0)
       return res
@@ -180,6 +180,7 @@ const updateUser = (req: Request, res: Response) => {
     status: false,
     message: errorsUser.default,
   };
+  console.log("first");
   findElementById(Collections.users, userId, (err, results) => {
     if (err) {
       console.log(err);
