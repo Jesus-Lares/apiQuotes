@@ -18,6 +18,9 @@ function init() {
   app.use(`/api/${API_VERSION}`, userRoutes);
   app.use(`/api/${API_VERSION}`, quotesRoutes);
   app.use(`/api/${API_VERSION}`, shuffleRoutes);
+  app.get("/", (req, res) => {
+    res.status(200).send("API QUOTES");
+  });
 
   app.listen(port, () => {
     console.log("##############");
