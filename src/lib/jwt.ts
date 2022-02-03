@@ -1,4 +1,4 @@
-import { errorsUser, EXPIRETIME, SECRET_KEY } from "../config/constants";
+import { messageUser, EXPIRETIME, SECRET_KEY } from "../config/constants";
 import jwt from "jsonwebtoken";
 import { IJwt } from "../interfaces/jwt.interface";
 
@@ -18,7 +18,7 @@ class JWT {
       return jwt.verify(token, this.secreteKey);
     } catch (error) {
       console.log(error);
-      return errorsUser.TOKEN_VERICATION_FAILED;
+      return messageUser.TOKEN_VERICATION_FAILED;
     }
   }
 }

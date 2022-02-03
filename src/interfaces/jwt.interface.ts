@@ -1,5 +1,5 @@
-import { IUser } from "./table.interface";
+import { IUserToken } from "./table.interface";
 
 export interface IJwt {
-  user: IUser;
+  user: IUserToken;
 }

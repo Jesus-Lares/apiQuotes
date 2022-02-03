@@ -12,7 +12,7 @@ export interface IUser {
   allQuotes?: boolean;
 }
 export interface IUserToken {
-  id: number;
+  id?: number;
   name: string;
   role: string;
 }

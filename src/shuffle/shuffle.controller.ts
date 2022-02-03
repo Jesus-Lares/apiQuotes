@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { Collections } from "../config/constants";
+import { Collections, messageViewQuotes } from "../config/constants";
 import {
   createMultipleElements,
   deleteElementShuffle,
@@ -13,8 +13,7 @@ const getShuffleQuote = (req: Request, res: Response) => {
   const { id } = req.params;
   const send = {
     status: false,
-    message:
-      "Error al realizar la petición. Comprueba que tienes corretamente todo.",
+    message: messageViewQuotes.ERROR_DEFAULT,
   };
   findElementById(Collections.users, id, (err, results) => {
     if (err) return res.status(400).send(send);
@@ -22,7 +21,7 @@ const getShuffleQuote = (req: Request, res: Response) => {
     if (results.length === 0)
       return res
         .status(400)
-        .send({ ...send, message: "Es invalida su clave." });
+        .send({ ...send, message: messageViewQuotes.INVALID_KEY });
 
     const user = results[0];
     let checkDate = true;
@@ -52,7 +51,7 @@ const getShuffleQuote = (req: Request, res: Response) => {
                   (er) => {
                     return res.status(400).send({
                       ...send,
-                      message: "Ya no se tiene acceso a esta cita.",
+                      message: messageViewQuotes.NOT_ACCESS,
                     });
                   }
                 );
@@ -85,8 +84,7 @@ const getShuffleQuote = (req: Request, res: Response) => {
                 if (resAllQuotes.length === 0)
                   return res.status(200).send({
                     status: false,
-                    message:
-                      "No cuenta con ninguna cita y el permiso para obtener las globales esta bloqueado.",
+                    message: messageViewQuotes.EMPTY_RESPONSE,
                   });
                 const shuffle = Math.floor(
                   Math.random() * resultsShuffle.length
@@ -142,7 +140,7 @@ const getShuffleQuote = (req: Request, res: Response) => {
                       if (errDeleted) return res.status(400).send(send);
                       return res.status(400).send({
                         ...send,
-                        message: "Ya no se tiene acceso a esta cita.",
+                        message: messageViewQuotes.NOT_ACCESS,
                       });
                     }
                   );

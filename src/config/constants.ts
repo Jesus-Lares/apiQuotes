@@ -19,25 +19,39 @@ export const createConstants: typesObjectString = {
   ViewQuotes: "(userId,quoteId)",
 };
 
-export const errorsUser: typesObjectString = {
+export const messageUser: typesObjectString = {
   EMAIL_EXIST: "El email ya esta regitrado con una cuenta.",
+  GET_ALL: "Lista de usuarios cargada correctamente",
+  GET: "Usuario cargado correctamente.",
   DATA_EMPTY: "No se recibieron datos para el registro.",
+  CREATE_SUCCESS: "Usuario creado correctamente.",
   EMAIL_NOT_EXIST: "El usuario no existe.",
   WRONG_PASSWORD: "Contraseña incorrecta.",
   TOKEN_VERICATION_FAILED: "token no valido, inicia sesion de nuevo",
+  DELETE_SUCCESS: "Usuario eliminado.",
+  UPDATE_SUCCESS: "Usuario eliminado.",
   ALL_USERS:
     "Error al cargar los usuarios. Comprueba que tienes todo corretamente.",
-  default:
+  ERROR_DEFAULT:
     "Error al realizar la petición. Comprueba que tienes corretamente todo",
 };
-export const errorsQuote: typesObjectString = {
-  TOKEN_VERICATION_FAILED: "token no valido, inicia sesion de nuevo",
+export const messageViewQuotes: typesObjectString = {
+  NOT_ACCESS: "Ya no se tiene acceso a esta cita.",
+  INVALID_KEY: "Su clave es invalida.",
+  EMPTY_RESPONSE:
+    "No cuenta con ninguna cita y el permiso para obtener las globales esta bloqueado.",
+  ERROR_DEFAULT:
+    "Error al realizar la petición. Comprueba que tienes corretamente todo.",
+};
+export const messageQuotes: typesObjectString = {
+  GET__ALL: "Lista de citas cargada correctamente.",
   DATA_EMPTY: "No se recibieron datos para el registro.",
-  QUOTE_NOT_EXIST: "La cita no existe.",
-  default:
-    "Error al realizar la petición. Comprueba que tienes corretamente todo",
+  CREATE_SUCCESS: "Cita creada correctamente.",
+  DELETE_SUCCESS: "Cita eliminada correctamente.",
+  UPDATE_SUCCESS: "Cita actualizada correctamente.",
+  ERROR_DEFAULT:
+    "Error al realizar la petición. Comprueba que tienes corretamente todo.",
 };
-
 export enum EXPIRETIME {
   H1 = 60 * 60,
   H24 = 24 * H1,

@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from "express";
 import bcrypt from "bcrypt";
 
-import { errorsUser, RoleUser } from "../config/constants";
+import { messageUser, RoleUser } from "../config/constants";
 import JWT from "../lib/jwt";
 
 export default (req: Request, res: Response, next: NextFunction) => {
@@ -14,7 +14,7 @@ export default (req: Request, res: Response, next: NextFunction) => {
 
   const token = req.headers.authorization;
   let info = new JWT().verify(token);
-  if (info === errorsUser.TOKEN_VERICATION_FAILED) {
+  if (info === messageUser.TOKEN_VERICATION_FAILED) {
     return res.status(400).send({ status: false, message: info });
   }
 

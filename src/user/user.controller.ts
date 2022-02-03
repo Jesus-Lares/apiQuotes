@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import { MysqlError } from "mysql";
 import bcrypt from "bcrypt";
 
 import {
@@ -11,26 +10,22 @@ import {
   findElementById,
   updateElementById,
 } from "../lib/db-operations";
-import {
-  Collections,
-  createConstants,
-  errorsUser,
-  RoleUser,
-} from "../config/constants";
 import JWT from "../lib/jwt";
+import { Collections, messageUser, RoleUser } from "../config/constants";
+import { IUser, IUserToken } from "../interfaces/table.interface";
 
 const users = (req: Request, res: Response) => {
-  findAllElements(Collections.users, (err: MysqlError | null, result) => {
+  findAllElements(Collections.users, (err, result) => {
     if (err) {
       return res.status(400).send({
         status: false,
-        message: createConstants.ALL_USERS,
+        message: messageUser.ALL_USERS,
         users: [],
       });
     }
     return res.status(200).send({
       status: true,
-      message: "Lista de usuarios cargada correctamente",
+      message: messageUser.GET_ALL,
       users: result,
     });
   });
@@ -38,11 +33,11 @@ const users = (req: Request, res: Response) => {
 const signUp = (req: Request, res: Response) => {
   const send = {
     status: false,
-    message: errorsUser.default,
+    message: messageUser.ERROR_DEFAULT,
     user: null,
   };
   if (!req.body)
-    res.status(400).send({ ...send, message: errorsUser.DATA_EMPTY });
+    res.status(400).send({ ...send, message: messageUser.DATA_EMPTY });
 
   const { name, email, password } = req.body;
 
@@ -50,9 +45,11 @@ const signUp = (req: Request, res: Response) => {
     if (emailErr) return res.status(400).send(send);
 
     if (results.length != 0)
-      return res.status(400).send({ ...send, message: errorsUser.EMAIL_EXIST });
+      return res
+        .status(400)
+        .send({ ...send, message: messageUser.EMAIL_EXIST });
 
-    const user = {
+    const user: IUser = {
       name,
       email,
       password: bcrypt.hashSync(password, 10),
@@ -65,22 +62,16 @@ const signUp = (req: Request, res: Response) => {
         console.log(err);
         return res.status(400).send(send);
       }
-      delete user.password;
-      delete user.registerDate;
-      delete user.email;
-      delete user.state;
-      user.role = bcrypt.hashSync(user.role, 10);
+      const userToken: IUserToken = {
+        id: userResults.insertId,
+        name: user.name,
+        role: bcrypt.hashSync(user.role, 10),
+      };
 
-      /* return res.status(200).send({
-      status: true,
-      message: "Usuario cargado correctamente",
-      token: new JWT().sign({ user }),
-    }); */
-      console.log(userResults);
       return res.status(200).send({
         status: true,
-        message: "Usuario creado correctamente",
-        user: { id: userResults.insertId, ...user },
+        message: messageUser.CREATE_SUCCESS,
+        token: new JWT().sign({ user: userToken }),
       });
     });
   });
@@ -88,11 +79,11 @@ const signUp = (req: Request, res: Response) => {
 const signIn = (req: Request, res: Response) => {
   const send = {
     status: false,
-    message: errorsUser.default,
+    message: messageUser.ERROR_DEFAULT,
     user: null,
   };
   if (!req.body)
-    res.status(400).send({ ...send, message: errorsUser.DATA_EMPTY });
+    res.status(400).send({ ...send, message: messageUser.DATA_EMPTY });
 
   const { email, password } = req.body;
 
@@ -102,31 +93,31 @@ const signIn = (req: Request, res: Response) => {
     if (results.length === 0)
       return res
         .status(400)
-        .send({ ...send, message: errorsUser.EMAIL_NOT_EXIST });
-    const user = results[0];
+        .send({ ...send, message: messageUser.EMAIL_NOT_EXIST });
+    const user: IUser = results[0];
     const passwordCheck = bcrypt.compareSync(password, user.password);
     if (!passwordCheck) {
       return res
         .status(400)
-        .send({ ...send, message: errorsUser.WRONG_PASSWORD });
+        .send({ ...send, message: messageUser.WRONG_PASSWORD });
     }
-    delete user.password;
-    delete user.registerDate;
-    delete user.email;
-    delete user.state;
-    user.role = bcrypt.hashSync(user.role, 10);
 
+    const userToken: IUserToken = {
+      id: user.id,
+      name: user.name,
+      role: bcrypt.hashSync(user.role, 10),
+    };
     return res.status(200).send({
       status: true,
-      message: "Usuario cargado correctamente",
-      token: new JWT().sign({ user }),
+      message: messageUser.GET,
+      token: new JWT().sign({ user: userToken }),
     });
   });
 };
 const getMe = (req: Request, res: Response) => {
   const send = {
     status: false,
-    message: errorsUser.default,
+    message: messageUser.ERROR_DEFAULT,
     user: null,
   };
 
@@ -137,11 +128,11 @@ const getMe = (req: Request, res: Response) => {
     if (results.length === 0)
       return res
         .status(400)
-        .send({ ...send, message: errorsUser.EMAIL_NOT_EXIST });
+        .send({ ...send, message: messageUser.EMAIL_NOT_EXIST });
 
     return res.status(200).send({
       status: true,
-      message: "Usuario cargado correctamente.",
+      message: messageUser.GET,
       user: results[0],
     });
   });
@@ -150,7 +141,7 @@ const deleteUser = (req: Request, res: Response) => {
   const { id } = req.params;
   const send = {
     status: false,
-    message: errorsUser.default,
+    message: messageUser.ERROR_DEFAULT,
   };
   findElementById(Collections.users, parseInt(id), (err, results) => {
     if (err) {
@@ -160,7 +151,7 @@ const deleteUser = (req: Request, res: Response) => {
     if (results.length === 0)
       return res
         .status(400)
-        .send({ ...send, message: errorsUser.EMAIL_NOT_EXIST });
+        .send({ ...send, message: messageUser.EMAIL_NOT_EXIST });
 
     deleteElementById(Collections.users, parseInt(id), (errDelete) => {
       if (errDelete) {
@@ -172,13 +163,11 @@ const deleteUser = (req: Request, res: Response) => {
         "idUser",
         parseInt(id),
         (errQuote) => {
-          if (errDelete) {
-            console.log(errDelete);
-            return res.status(400).send(send);
-          }
+          if (errQuote) return res.status(400).send(send);
+
           return res.status(200).send({
             status: true,
-            message: "Usuario eliminado.",
+            message: messageUser.DELETE_SUCCESS,
           });
         }
       );
@@ -189,7 +178,7 @@ const updateUser = (req: Request, res: Response) => {
   const userId = req.userId || -1;
   const send = {
     status: false,
-    message: errorsUser.default,
+    message: messageUser.ERROR_DEFAULT,
   };
   console.log("first");
   findElementById(Collections.users, userId, (err, results) => {
@@ -200,7 +189,7 @@ const updateUser = (req: Request, res: Response) => {
     if (results.length === 0)
       return res
         .status(400)
-        .send({ ...send, message: errorsUser.EMAIL_NOT_EXIST });
+        .send({ ...send, message: messageUser.EMAIL_NOT_EXIST });
 
     updateElementById(Collections.users, userId, req.body, (errUpdate) => {
       if (errUpdate) {
@@ -209,7 +198,7 @@ const updateUser = (req: Request, res: Response) => {
       }
       return res.status(200).send({
         status: true,
-        message: "Usuario actualizado.",
+        message: messageUser.UPDATE_SUCCESS,
       });
     });
   });
