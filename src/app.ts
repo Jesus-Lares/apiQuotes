@@ -1,12 +1,14 @@
 import express from "express";
-import dotenv from "dotenv-safe";
+import * as dotenv from "dotenv";
+(async () => {
+  await dotenv.config();
+})();
 
 import userRoutes from "./user/user.route";
 import quotesRoutes from "./quotes/quotes.route";
 import shuffleRoutes from "./shuffle/shuffle.route";
 
 function init() {
-  dotenv.config();
   const app = express();
 
   const port = process.env.PORT || 3000;

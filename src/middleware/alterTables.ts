@@ -18,14 +18,12 @@ export const alterQuote = (req: Request, res: Response, next: NextFunction) => {
     Collections.quotes,
     parseInt(req.params.id),
     (err, results) => {
-      if (err) {
-        console.log(err);
+      if (err)
         return res.status(400).send({
           status: false,
           message:
             "Error al realizar la petición. Comprueba que tienes corretamente todo",
         });
-      }
       if (results[0]?.idUser === req.userId) next();
       else
         return res.status(400).send({

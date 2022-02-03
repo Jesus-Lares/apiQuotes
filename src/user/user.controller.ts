@@ -58,10 +58,7 @@ const signUp = (req: Request, res: Response) => {
     };
 
     createElement(Collections.users, user, (err, userResults) => {
-      if (err) {
-        console.log(err);
-        return res.status(400).send(send);
-      }
+      if (err) return res.status(400).send(send);
       const userToken: IUserToken = {
         id: userResults.insertId,
         name: user.name,
@@ -144,20 +141,14 @@ const deleteUser = (req: Request, res: Response) => {
     message: messageUser.ERROR_DEFAULT,
   };
   findElementById(Collections.users, parseInt(id), (err, results) => {
-    if (err) {
-      console.log(err);
-      return res.status(400).send(send);
-    }
+    if (err) return res.status(400).send(send);
     if (results.length === 0)
       return res
         .status(400)
         .send({ ...send, message: messageUser.EMAIL_NOT_EXIST });
 
     deleteElementById(Collections.users, parseInt(id), (errDelete) => {
-      if (errDelete) {
-        console.log(errDelete);
-        return res.status(400).send(send);
-      }
+      if (errDelete) return res.status(400).send(send);
       deleteAllElement(
         Collections.quotes,
         "idUser",
@@ -180,22 +171,15 @@ const updateUser = (req: Request, res: Response) => {
     status: false,
     message: messageUser.ERROR_DEFAULT,
   };
-  console.log("first");
   findElementById(Collections.users, userId, (err, results) => {
-    if (err) {
-      console.log(err);
-      return res.status(400).send(send);
-    }
+    if (err) return res.status(400).send(send);
     if (results.length === 0)
       return res
         .status(400)
         .send({ ...send, message: messageUser.EMAIL_NOT_EXIST });
 
     updateElementById(Collections.users, userId, req.body, (errUpdate) => {
-      if (errUpdate) {
-        console.log(errUpdate);
-        return res.status(400).send(send);
-      }
+      if (errUpdate) return res.status(400).send(send);
       return res.status(200).send({
         status: true,
         message: messageUser.UPDATE_SUCCESS,

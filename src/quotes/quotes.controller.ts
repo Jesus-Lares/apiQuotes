@@ -13,14 +13,12 @@ const quotes = (req: Request, res: Response) => {
   const idUser = req.userId || -1;
 
   findElement(Collections.quotes, "idUser", idUser, (err, result) => {
-    if (err) {
-      console.log(err);
+    if (err)
       return res.status(400).send({
         status: false,
         message: messageQuotes.ERROR_DEFAULT,
         quotes: [],
       });
-    }
     return res.status(200).send({
       status: true,
       message: messageQuotes.GET_ALL,
@@ -45,10 +43,7 @@ const createQuote = (req: Request, res: Response) => {
     registerDate: new Date().toISOString(),
   };
   createElement(Collections.quotes, obj, (err, results) => {
-    if (err) {
-      console.log(err);
-      return res.status(400).send(send);
-    }
+    if (err) return res.status(400).send(send);
     return res.status(200).send({
       status: true,
       message: messageQuotes.CREATE_SUCCESS,
@@ -64,10 +59,7 @@ const getQuote = (req: Request, res: Response) => {
     quote: null,
   };
   findElementById(Collections.quotes, parseInt(id), (err, results) => {
-    if (err) {
-      console.log(err);
-      return res.status(400).send(send);
-    }
+    if (err) return res.status(400).send(send);
     if (results.length === 0)
       return res
         .status(400)
@@ -86,20 +78,14 @@ const deleteQuote = (req: Request, res: Response) => {
     message: messageQuotes.ERROR_DEFAULT,
   };
   findElementById(Collections.quotes, parseInt(id), (err, results) => {
-    if (err) {
-      console.log(err);
-      return res.status(400).send(send);
-    }
+    if (err) return res.status(400).send(send);
     if (results.length === 0)
       return res
         .status(400)
         .send({ ...send, message: messageQuotes.QUOTE_NOT_EXIST });
 
     deleteElementById(Collections.quotes, parseInt(id), (errDelete) => {
-      if (errDelete) {
-        console.log(errDelete);
-        return res.status(400).send(send);
-      }
+      if (errDelete) return res.status(400).send(send);
       return res.status(200).send({
         status: true,
         message: messageQuotes.DELETE_SUCCESS,
@@ -114,10 +100,8 @@ const updateQuote = (req: Request, res: Response) => {
     message: messageQuotes.ERROR_DEFAULT,
   };
   findElementById(Collections.quotes, parseInt(id), (err, results) => {
-    if (err) {
-      console.log(err);
-      return res.status(400).send(send);
-    }
+    if (err) return res.status(400).send(send);
+
     if (results.length === 0)
       return res
         .status(400)
@@ -128,10 +112,7 @@ const updateQuote = (req: Request, res: Response) => {
       parseInt(id),
       req.body,
       (errUpdate) => {
-        if (errUpdate) {
-          console.log(errUpdate);
-          return res.status(400).send(send);
-        }
+        if (errUpdate) return res.status(400).send(send);
         return res.status(200).send({
           status: true,
           message: messageQuotes.UPDATE_SUCCESS,
