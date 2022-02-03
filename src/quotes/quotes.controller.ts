@@ -56,7 +56,6 @@ const createQuote = (req: Request, res: Response) => {
       console.log(err);
       return res.status(400).send(send);
     }
-
     return res.status(200).send({
       status: true,
       message: "Cita creada correctamente",

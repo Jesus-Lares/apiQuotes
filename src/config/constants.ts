@@ -14,7 +14,7 @@ type typesObjectString = {
   [key: string]: string;
 };
 export const createConstants: typesObjectString = {
-  Users: "(id,name,email,password,registerDate,role,state)",
+  Users: "(id,name,email,password,registerDate,role)",
   Quotes: "(id,quote,writer,role,idUser,registerDate)",
   ViewQuotes: "(userId,quoteId)",
 };

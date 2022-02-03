@@ -58,7 +58,6 @@ const signUp = (req: Request, res: Response) => {
       password: bcrypt.hashSync(password, 10),
       registerDate: new Date().toISOString(),
       role: RoleUser.client,
-      state: 1,
     };
 
     createElement(Collections.users, user, (err, userResults) => {
@@ -66,6 +65,18 @@ const signUp = (req: Request, res: Response) => {
         console.log(err);
         return res.status(400).send(send);
       }
+      delete user.password;
+      delete user.registerDate;
+      delete user.email;
+      delete user.state;
+      user.role = bcrypt.hashSync(user.role, 10);
+
+      /* return res.status(200).send({
+      status: true,
+      message: "Usuario cargado correctamente",
+      token: new JWT().sign({ user }),
+    }); */
+      console.log(userResults);
       return res.status(200).send({
         status: true,
         message: "Usuario creado correctamente",
